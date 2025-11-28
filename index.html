@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Monitor simple Arduino</title>
+<style>
+  body{font-family:Arial;background:#f4f7fb;padding:20px;text-align:center;}
+  .card{display:inline-block;background:#fff;padding:18px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);}
+  .val{font-size:28px;font-weight:600;margin:8px 0}
+</style>
+</head>
+<body>
+  <h2>Lecturas Arduino (ENC28J60)</h2>
+  <div class="card">
+    <div>pH <div id="ph" class="val">--</div></div>
+    <div>Temperatura <div id="temp" class="val">-- °C</div></div>
+    <div>Humedad <div id="hum" class="val">-- %</div></div>
+    <div>Nivel <div id="nivel" class="val">--</div></div>
+    <button onclick="cargar()">Actualizar ahora</button>
+  </div>
+
+<script>
+const URL = "http://192.168.100.8/"; // <- pon aquí la IP que mostró el Serial
+async function cargar(){
+  try {
+    const r = await fetch(URL, {cache:"no-store"});
+    const j = await r.json();
+    document.getElementById("ph").textContent = j.ph;
+    document.getElementById("temp").textContent = j.temp + " °C";
+    document.getElementById("hum").textContent = j.hum + " %";
+    document.getElementById("nivel").textContent = j.nivel;
+  } catch(e){
+    console.log("Error fetch:", e);
+  }
+}
+setInterval(cargar, 1000);
+cargar();
+</script>
+</body>
+</html>
